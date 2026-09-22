@@ -79,12 +79,13 @@ public class SnipEditorForm : Form
         ForeColor = Color.White;
         StartPosition = FormStartPosition.CenterScreen;
         KeyPreview = true;
+        MinimumSize = new Size(880, 520);
 
         // Size appropriately
         int screenW = Screen.PrimaryScreen?.WorkingArea.Width ?? 1280;
         int screenH = Screen.PrimaryScreen?.WorkingArea.Height ?? 800;
-        int initW = Math.Min(screenW - 100, Math.Max(950, _originalImage.Width + 80));
-        int initH = Math.Min(screenH - 100, Math.Max(650, _originalImage.Height + 130));
+        int initW = Math.Min(screenW - 60, Math.Max(980, _originalImage.Width + 80));
+        int initH = Math.Min(screenH - 60, Math.Max(660, _originalImage.Height + 130));
         Size = new Size(initW, initH);
 
         // 1. Modern Top Toolbar
@@ -103,7 +104,7 @@ public class SnipEditorForm : Form
 
         var flowLeft = new FlowLayoutPanel
         {
-            Dock = DockStyle.Left,
+            Location = new Point(10, 6),
             AutoSize = true,
             BackColor = Color.Transparent,
             WrapContents = false
@@ -117,15 +118,15 @@ public class SnipEditorForm : Form
         AddSeparator(flowLeft);
 
         AddToolButton(flowLeft, EditorTool.Arrow, "↗️ Mũi tên", "Vẽ mũi tên chỉ dẫn");
-        AddToolButton(flowLeft, EditorTool.Rectangle, "🔲 Khung chữ nhật", "Vẽ khung chữ nhật");
-        AddToolButton(flowLeft, EditorTool.Ellipse, "⭕ Khung tròn", "Vẽ khung elip/tròn");
+        AddToolButton(flowLeft, EditorTool.Rectangle, "🔲 Chữ nhật", "Vẽ khung chữ nhật");
+        AddToolButton(flowLeft, EditorTool.Ellipse, "⭕ Tròn", "Vẽ khung tròn");
         AddToolButton(flowLeft, EditorTool.Text, "🔤 Chữ", "Thêm ghi chú chữ");
         AddToolButton(flowLeft, EditorTool.StepBadge, "🔢 Đánh số", "Đánh số thứ tự 1, 2, 3... (Chuột phải để reset số)");
         AddToolButton(flowLeft, EditorTool.Blur, "🌫️ Làm mờ", "Kéo che mờ vùng thông tin nhạy cảm");
 
         var flowRight = new FlowLayoutPanel
         {
-            Dock = DockStyle.Right,
+            Anchor = AnchorStyles.Top | AnchorStyles.Right,
             AutoSize = true,
             BackColor = Color.Transparent,
             WrapContents = false
@@ -137,11 +138,13 @@ public class SnipEditorForm : Form
 
         AddSeparator(flowRight);
 
-        _btnCopy = CreateActionButton("📋 Sao chép", "Sao chép ảnh đã đánh dấu vào Clipboard (Ctrl + C)", (s, e) => CopyToClipboard());
+        _btnCopy = CreateActionButton("📋 Sao chép (Ctrl+C)", "Sao chép ảnh đã đánh dấu vào Clipboard (Ctrl + C)", (s, e) => CopyToClipboard());
         _btnCopy.BackColor = Color.FromArgb(0, 120, 215);
-        _btnCopy.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
+        _btnCopy.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+        _btnCopy.Padding = new Padding(12, 0, 12, 0);
 
-        _btnSave = CreateActionButton("💾 Lưu ảnh", "Lưu ảnh đã đánh dấu ra file (Ctrl + S)", (s, e) => SaveToFile());
+        _btnSave = CreateActionButton("💾 Lưu (Ctrl+S)", "Lưu ảnh đã đánh dấu ra file (Ctrl + S)", (s, e) => SaveToFile());
+        _btnSave.Padding = new Padding(10, 0, 10, 0);
 
         flowRight.Controls.Add(_btnUndo);
         flowRight.Controls.Add(_btnRedo);
@@ -151,6 +154,13 @@ public class SnipEditorForm : Form
 
         _toolbarPanel.Controls.Add(flowLeft);
         _toolbarPanel.Controls.Add(flowRight);
+        flowRight.BringToFront();
+
+        void RepositionToolbar()
+        {
+            flowRight.Location = new Point(_toolbarPanel.ClientSize.Width - flowRight.PreferredSize.Width - 12, 6);
+        }
+        _toolbarPanel.Resize += (s, e) => RepositionToolbar();
         Controls.Add(_toolbarPanel);
 
         // 2. Canvas Container with smooth centering
@@ -174,13 +184,92 @@ public class SnipEditorForm : Form
         _canvasBox.MouseMove += CanvasBox_MouseMove;
         _canvasBox.MouseUp += CanvasBox_MouseUp;
 
+        // Context menu on right click
+        var canvasMenu = new ContextMenuStrip();
+        var menuCopy = new ToolStripMenuItem("📋 Sao chép ảnh (Ctrl + C)", null, (s, e) => CopyToClipboard())
+        {
+            Font = new Font(canvasMenu.Font, FontStyle.Bold)
+        };
+        var menuSave = new ToolStripMenuItem("💾 Lưu ảnh ra file... (Ctrl + S)", null, (s, e) => SaveToFile());
+        var menuUndo = new ToolStripMenuItem("↩️ Hoàn tác (Ctrl + Z)", null, (s, e) => Undo());
+        var menuRedo = new ToolStripMenuItem("↪️ Làm lại (Ctrl + Y)", null, (s, e) => Redo());
+        var menuClear = new ToolStripMenuItem("🗑️ Xóa tất cả nét vẽ", null, (s, e) => ClearAll());
+
+        canvasMenu.Items.AddRange(new ToolStripItem[]
+        {
+            menuCopy,
+            menuSave,
+            new ToolStripSeparator(),
+            menuUndo,
+            menuRedo,
+            menuClear
+        });
+        _canvasBox.ContextMenuStrip = canvasMenu;
+
         _canvasContainer.Controls.Add(_canvasBox);
-        _canvasContainer.Resize += (s, e) => CenterCanvas();
+
+        // Floating Quick Action Pill at bottom-right
+        var floatBar = new Panel
+        {
+            Size = new Size(270, 48),
+            BackColor = Color.FromArgb(235, 38, 38, 42),
+            Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
+            Padding = new Padding(6)
+        };
+        floatBar.Paint += (s, pe) =>
+        {
+            pe.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            using Pen borderPen = new Pen(Color.FromArgb(90, 255, 255, 255), 1.2f);
+            pe.Graphics.DrawRectangle(borderPen, 0, 0, floatBar.Width - 1, floatBar.Height - 1);
+        };
+
+        var btnFloatCopy = new Button
+        {
+            Text = "📋 Sao chép (Ctrl+C)",
+            BackColor = Color.FromArgb(0, 120, 215),
+            ForeColor = Color.White,
+            Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+            FlatStyle = FlatStyle.Flat,
+            Size = new Size(160, 34),
+            Location = new Point(7, 7),
+            Cursor = Cursors.Hand
+        };
+        btnFloatCopy.FlatAppearance.BorderSize = 0;
+        btnFloatCopy.Click += (s, e) => CopyToClipboard();
+
+        var btnFloatSave = new Button
+        {
+            Text = "💾 Lưu",
+            BackColor = Color.FromArgb(60, 60, 65),
+            ForeColor = Color.White,
+            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
+            FlatStyle = FlatStyle.Flat,
+            Size = new Size(88, 34),
+            Location = new Point(173, 7),
+            Cursor = Cursors.Hand
+        };
+        btnFloatSave.FlatAppearance.BorderSize = 0;
+        btnFloatSave.Click += (s, e) => SaveToFile();
+
+        floatBar.Controls.Add(btnFloatCopy);
+        floatBar.Controls.Add(btnFloatSave);
+        _canvasContainer.Controls.Add(floatBar);
+        floatBar.BringToFront();
+
+        void UpdateFloatBarPosition()
+        {
+            CenterCanvas();
+            floatBar.Location = new Point(_canvasContainer.ClientSize.Width - floatBar.Width - 20, _canvasContainer.ClientSize.Height - floatBar.Height - 20);
+            floatBar.BringToFront();
+        }
+
+        _canvasContainer.Resize += (s, e) => UpdateFloatBarPosition();
         Controls.Add(_canvasContainer);
 
         UpdateToolButtonStyles();
         UpdateUndoRedoState();
-        CenterCanvas();
+        RepositionToolbar();
+        UpdateFloatBarPosition();
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
