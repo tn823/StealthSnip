@@ -12,3 +12,4 @@ E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\win-x64\refint\StealthSnip
 E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\win-x64\StealthSnip.pdb
 E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\win-x64\screenshot-app.genruntimeconfig.cache
 E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\win-x64\ref\StealthSnip.dll
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\win-x64\screenshot-app.sourcelink.json

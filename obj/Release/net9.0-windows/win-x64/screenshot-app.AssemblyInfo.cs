@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StealthSnip")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e1a8fe883e651eb9fd4b3d6fe866896f34b2c93")]
 [assembly: System.Reflection.AssemblyProductAttribute("StealthSnip")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StealthSnip")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
