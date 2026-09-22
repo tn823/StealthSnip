@@ -1,0 +1,5 @@
+E:\linhtinh\screenshot-app\StealthSnip.exe
+E:\linhtinh\screenshot-app\StealthSnip.dll
+E:\linhtinh\screenshot-app\StealthSnip.deps.json
+E:\linhtinh\screenshot-app\StealthSnip.runtimeconfig.json
+E:\linhtinh\screenshot-app\StealthSnip.pdb

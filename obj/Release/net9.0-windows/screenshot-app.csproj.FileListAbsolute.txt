@@ -1,0 +1,14 @@
+E:\linhtinh\screenshot-app\bin\Release\net9.0-windows\StealthSnip.exe
+E:\linhtinh\screenshot-app\bin\Release\net9.0-windows\StealthSnip.deps.json
+E:\linhtinh\screenshot-app\bin\Release\net9.0-windows\StealthSnip.runtimeconfig.json
+E:\linhtinh\screenshot-app\bin\Release\net9.0-windows\StealthSnip.dll
+E:\linhtinh\screenshot-app\bin\Release\net9.0-windows\StealthSnip.pdb
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\screenshot-app.GeneratedMSBuildEditorConfig.editorconfig
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\screenshot-app.AssemblyInfoInputs.cache
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\screenshot-app.AssemblyInfo.cs
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\screenshot-app.csproj.CoreCompileInputs.cache
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\StealthSnip.dll
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\refint\StealthSnip.dll
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\StealthSnip.pdb
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\screenshot-app.genruntimeconfig.cache
+E:\linhtinh\screenshot-app\obj\Release\net9.0-windows\ref\StealthSnip.dll

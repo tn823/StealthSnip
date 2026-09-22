@@ -1,0 +1,14 @@
+E:\linhtinh\screenshot-app\bin\Debug\net10.0-windows\screenshot-app.exe
+E:\linhtinh\screenshot-app\bin\Debug\net10.0-windows\screenshot-app.deps.json
+E:\linhtinh\screenshot-app\bin\Debug\net10.0-windows\screenshot-app.runtimeconfig.json
+E:\linhtinh\screenshot-app\bin\Debug\net10.0-windows\screenshot-app.dll
+E:\linhtinh\screenshot-app\bin\Debug\net10.0-windows\screenshot-app.pdb
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\screenshot-app.GeneratedMSBuildEditorConfig.editorconfig
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\screenshot-app.AssemblyInfoInputs.cache
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\screenshot-app.AssemblyInfo.cs
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\screenshot-app.csproj.CoreCompileInputs.cache
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\screenshot-app.dll
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\refint\screenshot-app.dll
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\screenshot-app.pdb
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\screenshot-app.genruntimeconfig.cache
+E:\linhtinh\screenshot-app\obj\Debug\net10.0-windows\ref\screenshot-app.dll
