@@ -1,0 +1,5 @@
+E:\linhtinh\StealthSnip\dist\StealthSnip.exe
+E:\linhtinh\StealthSnip\dist\StealthSnip.dll
+E:\linhtinh\StealthSnip\dist\StealthSnip.deps.json
+E:\linhtinh\StealthSnip\dist\StealthSnip.runtimeconfig.json
+E:\linhtinh\StealthSnip\dist\StealthSnip.pdb

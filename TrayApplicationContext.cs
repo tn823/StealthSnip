@@ -14,6 +14,7 @@ public class TrayApplicationContext : ApplicationContext
     private readonly HotkeyManager _hotkeyManager;
     private IntPtr _iconHandle = IntPtr.Zero;
     private bool _isSnipActive = false;
+    private SnipPreviewPopup? _activePreviewPopup = null;
 
     public TrayApplicationContext()
     {
@@ -32,7 +33,17 @@ public class TrayApplicationContext : ApplicationContext
 
         var itemOpenFolder = new ToolStripMenuItem("📂 Mở thư mục lưu ảnh", null, (s, e) => OpenScreenshotsFolder());
 
-        var itemOpenEditor = new ToolStripMenuItem("✏️ Mở trình vẽ sau khi chụp (Markup Editor)", null, (s, e) =>
+        var itemPreviewPopup = new ToolStripMenuItem("🖼️ Hiện xem nhanh sau khi chụp (Preview Popup)", null, (s, e) =>
+        {
+            if (s is ToolStripMenuItem mi)
+            {
+                _settings.ShowPreviewPopup = !mi.Checked;
+                mi.Checked = _settings.ShowPreviewPopup;
+                _settings.Save();
+            }
+        }) { Checked = _settings.ShowPreviewPopup };
+
+        var itemOpenEditor = new ToolStripMenuItem("✏️ Mở ngay trình vẽ (Bỏ qua xem nhanh)", null, (s, e) =>
         {
             if (s is ToolStripMenuItem mi)
             {
@@ -91,6 +102,7 @@ public class TrayApplicationContext : ApplicationContext
             itemFullscreen,
             itemActiveWindow,
             new ToolStripSeparator(),
+            itemPreviewPopup,
             itemOpenEditor,
             itemOpenFolder,
             itemAutoSave,
@@ -195,16 +207,7 @@ public class TrayApplicationContext : ApplicationContext
             using var form = new StealthSnipForm(snapshot, _settings, ShowNotification);
             form.ShowDialog();
 
-            if (_settings.OpenEditorAfterSnip && form.ResultImage != null)
-            {
-                using var editor = new SnipEditorForm(form.ResultImage, _settings, ShowNotification);
-                form.ResultImage.Dispose();
-                editor.ShowDialog();
-            }
-            else
-            {
-                form.ResultImage?.Dispose();
-            }
+            HandleCaptureResult(form.ResultImage);
         }
         catch (Exception ex)
         {
@@ -221,12 +224,8 @@ public class TrayApplicationContext : ApplicationContext
     {
         try
         {
-            using Bitmap bmp = CaptureHelper.CaptureFullscreen(_settings, ShowNotification);
-            if (_settings.OpenEditorAfterSnip)
-            {
-                using var editor = new SnipEditorForm(bmp, _settings, ShowNotification);
-                editor.ShowDialog();
-            }
+            Bitmap bmp = CaptureHelper.CaptureFullscreen(_settings, ShowNotification);
+            HandleCaptureResult(bmp);
         }
         catch (Exception ex)
         {
@@ -242,12 +241,8 @@ public class TrayApplicationContext : ApplicationContext
     {
         try
         {
-            using Bitmap bmp = CaptureHelper.CaptureActiveWindow(_settings, ShowNotification);
-            if (_settings.OpenEditorAfterSnip)
-            {
-                using var editor = new SnipEditorForm(bmp, _settings, ShowNotification);
-                editor.ShowDialog();
-            }
+            Bitmap bmp = CaptureHelper.CaptureActiveWindow(_settings, ShowNotification);
+            HandleCaptureResult(bmp);
         }
         catch (Exception ex)
         {
@@ -256,6 +251,65 @@ public class TrayApplicationContext : ApplicationContext
         finally
         {
             NativeMethods.MinimizeMemory();
+        }
+    }
+
+    private void HandleCaptureResult(Bitmap? image)
+    {
+        if (image == null) return;
+
+        if (_settings.ShowPreviewPopup)
+        {
+            try
+            {
+                if (_activePreviewPopup != null && !_activePreviewPopup.IsDisposed)
+                {
+                    _activePreviewPopup.Close();
+                    _activePreviewPopup.Dispose();
+                    _activePreviewPopup = null;
+                }
+            }
+            catch { }
+
+            _activePreviewPopup = new SnipPreviewPopup(image, OpenEditor);
+            _activePreviewPopup.FormClosed += (s, e) =>
+            {
+                if (_activePreviewPopup == s)
+                {
+                    _activePreviewPopup = null;
+                }
+            };
+            _activePreviewPopup.Show();
+        }
+        else if (_settings.OpenEditorAfterSnip)
+        {
+            OpenEditor(image);
+        }
+        else
+        {
+            image.Dispose();
+        }
+    }
+
+    private void OpenEditor(Bitmap image)
+    {
+        try
+        {
+            var editor = new SnipEditorForm(image, _settings, ShowNotification);
+            image.Dispose(); // SnipEditorForm creates its own clone in constructor
+            editor.FormClosed += (s, e) =>
+            {
+                editor.Dispose();
+                NativeMethods.MinimizeMemory();
+            };
+            editor.Show();
+            editor.BringToFront();
+            editor.Activate();
+        }
+        catch (Exception ex)
+        {
+            ShowNotification("Lỗi mở trình vẽ", ex.Message);
+            image?.Dispose();
         }
     }
 
@@ -302,6 +356,17 @@ public class TrayApplicationContext : ApplicationContext
 
     private void ExitApp()
     {
+        try
+        {
+            if (_activePreviewPopup != null && !_activePreviewPopup.IsDisposed)
+            {
+                _activePreviewPopup.Close();
+                _activePreviewPopup.Dispose();
+                _activePreviewPopup = null;
+            }
+        }
+        catch { }
+
         _notifyIcon.Visible = false;
         _hotkeyManager.Dispose();
         _notifyIcon.Dispose();

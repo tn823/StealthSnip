@@ -59,7 +59,7 @@ Traditional snipping tools freeze or darken the entire display when activated, d
 
 | Shortcut | Scope | Action | Description |
 | :--- | :--- | :--- | :--- |
-| **`Alt + A`** | Global | **Region Snip** | Drag to select capture region $\rightarrow$ Opens Markup Editor. |
+| **`Alt + A`** | Global | **Region Snip** | Drag to select capture region $\rightarrow$ Discreet preview toast (click to edit). |
 | **`Alt + S`** | Global | **Fullscreen Snip** | Captures the entire virtual desktop instantaneously. |
 | **`Alt + W`** | Global | **Active Window Snip** | Automatically detects and clips foreground window bounds. |
 | **`Ctrl + Shift + A`** | Global | **Backup Snip** | Secondary hotkey if `Alt + A` is intercepted by other software. |
@@ -74,21 +74,23 @@ Traditional snipping tools freeze or darken the entire display when activated, d
 
 Right-click the camera icon in the Windows Notification Area (bottom-right near clock) to configure:
 
-- **✏️ Open Markup Editor after capture**: Automatically opens the editor window when snip completes (disable for silent background capture).
+- **🖼️ Show preview popup after capture**: Displays a sleek floating thumbnail toast in the bottom-right corner with auto-dismiss (4s), pause-on-hover, and click-to-edit.
+- **✏️ Open Markup Editor directly**: Skips the preview toast and immediately opens the full editor.
 - **💾 Auto-save screenshots to disk**: Automatically preserves every capture into the `Screenshots/` directory.
 - **🔔 Play notification sound**: Subtle chime confirming successful capture.
-- **💬 Show balloon notification**: Toast notification with screenshot status.
+- **💬 Show balloon notification**: Windows balloon tip with screenshot status.
 - **🚀 Start with Windows**: Registers or unregisters user startup entry in Windows Registry.
 
 ---
 
 ## 🚀 Getting Started
 
-### Quick Run
-1. Download or clone this repository.
-2. Launch **`StealthSnip.exe`** directly—no heavy installers required.
-3. The app quietly minimizes to the System Tray.
-4. Press **`Alt + A`** to take your first stealth capture!
+### Quick Run (1-Click Build & Auto-Start)
+1. Nhấp đúp vào **`build_and_start.bat`**:
+   - Tự động biên dịch bản Release tối ưu.
+   - Tự động thiết lập khởi động cùng Windows (Registry `HKCU\Run`).
+   - Tự động khởi chạy ứng dụng ngầm ở System Tray.
+2. Bấm **`Alt + A`** để bắt đầu chụp vùng kín đáo!
 
 ---
 

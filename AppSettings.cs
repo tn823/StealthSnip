@@ -10,28 +10,28 @@ public class AppSettings
     private const string AppName = "StealthSnip";
     private const string RunRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
 
-    public bool OpenEditorAfterSnip { get; set; } = true;
+    public bool ShowPreviewPopup { get; set; } = true;
+    public bool OpenEditorAfterSnip { get; set; } = false;
     public bool AutoSave { get; set; } = false;
     public string SaveDirectory { get; set; } = Path.Combine(AppContext.BaseDirectory, "Screenshots");
     public bool PlaySound { get; set; } = false;
     public bool ShowNotification { get; set; } = false;
-    public bool StartWithWindows { get; set; } = false;
+    public bool StartWithWindows { get; set; } = true;
 
     private static readonly string ConfigFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
 
     public static AppSettings Load()
     {
+        AppSettings settings = new AppSettings();
         try
         {
             if (File.Exists(ConfigFilePath))
             {
                 string json = File.ReadAllText(ConfigFilePath);
-                var settings = JsonSerializer.Deserialize<AppSettings>(json);
-                if (settings != null)
+                var loaded = JsonSerializer.Deserialize<AppSettings>(json);
+                if (loaded != null)
                 {
-                    // Sync with actual registry value
-                    settings.StartWithWindows = IsStartupWithWindowsEnabled();
-                    return settings;
+                    settings = loaded;
                 }
             }
         }
@@ -40,9 +40,18 @@ public class AppSettings
             // Fallback to default
         }
 
-        var def = new AppSettings();
-        def.StartWithWindows = IsStartupWithWindowsEnabled();
-        return def;
+        // Sync with actual registry value or auto-register if enabled by default
+        bool inRegistry = IsStartupWithWindowsEnabled();
+        if (settings.StartWithWindows && !inRegistry)
+        {
+            settings.SetStartWithWindows(true);
+        }
+        else
+        {
+            settings.StartWithWindows = inRegistry;
+        }
+
+        return settings;
     }
 
     public void Save()

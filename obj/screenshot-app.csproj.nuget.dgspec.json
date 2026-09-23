@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\linhtinh\\screenshot-app\\screenshot-app.csproj": {}
+    "E:\\linhtinh\\StealthSnip\\screenshot-app.csproj": {}
   },
   "projects": {
-    "E:\\linhtinh\\screenshot-app\\screenshot-app.csproj": {
+    "E:\\linhtinh\\StealthSnip\\screenshot-app.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\linhtinh\\screenshot-app\\screenshot-app.csproj",
+        "projectUniqueName": "E:\\linhtinh\\StealthSnip\\screenshot-app.csproj",
         "projectName": "StealthSnip",
-        "projectPath": "E:\\linhtinh\\screenshot-app\\screenshot-app.csproj",
+        "projectPath": "E:\\linhtinh\\StealthSnip\\screenshot-app.csproj",
         "packagesPath": "C:\\Users\\IT-NGHIA\\.nuget\\packages\\",
-        "outputPath": "E:\\linhtinh\\screenshot-app\\obj\\",
+        "outputPath": "E:\\linhtinh\\StealthSnip\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -89,11 +89,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win-x64": {
-          "#import": []
         }
       }
     }
